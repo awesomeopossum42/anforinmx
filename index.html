@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anforín</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .btn-anforin-top {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #000;
+      color: #fff;
+      opacity: 0.9;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+    }
+
+    .btn-anforin-top:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-anforin-top:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Wrapper con borde de gradiente arcoiris animado */
+    .video-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+      padding: 4px; /* grosor del borde */
+      border-radius: 18px;
+      background: linear-gradient(
+        45deg,
+        #ff0000,
+        #ff7f00,
+        #ffff00,
+        #00ff00,
+        #0000ff,
+        #4b0082,
+        #8f00ff,
+        #ff0000
+      );
+      background-size: 300% 300%;
+      animation: rainbow 6s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .video-inner {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+    }
+
+    .btn-sorteos {
+      margin-top: 10px;
+      padding: 10px 28px;
+      border-radius: 999px;
+      border: 1px solid #000;
+      background: transparent;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease,
+        box-shadow 0.1s ease;
+    }
+
+    .btn-sorteos:hover {
+      background: #000;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-sorteos:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Anforín</h1>
+
+    <!-- Botón Anforín como header / arriba del video -->
+    <button class="btn-anforin-top" id="btnAnforin">
+      Anforín
+    </button>
+
+    <div class="video-wrapper">
+      <div class="video-inner">
+        <video
+          id="videoAnforin"
+          src="anforin.mp4"
+          autoplay
+          loop
+          playsinline
+        ></video>
+      </div>
+    </div>
+
+    <!-- Botón centrado abajo del video -->
+    <a href="https://sorteostec.org" target="_blank" rel="noopener noreferrer">
+      <button class="btn-sorteos">
+        Sorteos Tec
+      </button>
+    </a>
+  </div>
+
+  <!-- Audio para el sonido de confetti -->
+  <audio id="confettiSound" src="confetti.mp3" preload="auto"></audio>
+
+  <!-- Librería de confeti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const btnAnforin = document.getElementById('btnAnforin');
+    const confettiSound = document.getElementById('confettiSound');
+    const videoAnforin = document.getElementById('videoAnforin');
+
+    function lanzarConfetti() {
+      // Activar audio del video
+      if (videoAnforin) {
+        videoAnforin.muted = false;
+        const playPromise = videoAnforin.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Si el navegador bloquea el autoplay con sonido, al menos
+            // el siguiente clic ya contará como interacción de usuario.
+          });
+        }
+      }
+
+      // Reproducir sonido de confetti
+      if (confettiSound) {
+        const soundPromise = confettiSound.play();
+        if (soundPromise !== undefined) {
+          soundPromise.catch(() => {
+            // Silenciosamente ignoramos errores de autoplay
+          });
+        }
+      }
+
+      // Confetti principal
+      confetti({
+        particleCount: 200,
+        spread: 120,
+        startVelocity: 45,
+        origin: { y: 0.6 }
+      });
+
+      // Más confetti desde los lados
+      setTimeout(() => {
+        confetti({
+          particleCount: 80,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.2 }
+        });
+        confetti({
+          particleCount: 80,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.2 }
+        });
+      }, 150);
+    }
+
+    btnAnforin.addEventListener('click', lanzarConfetti);
+  </script>
+</body>
+</html>
